@@ -1,6 +1,8 @@
 import tkinter as tk
 from tournament import Tournament
 from Database import *
+
+
 class SetupTournament:
     def __init__(self, master, db):
         self.master = master
@@ -26,9 +28,6 @@ class SetupTournament:
     def open_tournament_page(self, sport):
         new_window = tk.Toplevel(self.master)
         Tournament(new_window, self.db, sport)
-        self.master.destroy()
+        #self.master.destroy()
 
-root = tk.Tk()
-root.title("Sports")
-db = Database()
-setup = SetupTournament(root, db)
+

@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-
+from Database import *
 
 class Tournament:
     def __init__(self, master, db, sport):
@@ -8,7 +8,7 @@ class Tournament:
         self.db = db
         self.sport = sport
         self.master.title("Create Tournament")
-        self.master.geometry("500x400")
+        self.master.geometry("850x700")
 
         self.tournament_name = tk.StringVar()
 
@@ -81,3 +81,4 @@ class Tournament:
             self.master.destroy()
         except Exception as e:
             messagebox.showerror("Database Error", f"An error occurred: {e}")
+
