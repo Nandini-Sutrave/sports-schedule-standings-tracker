@@ -3,7 +3,7 @@ from tkinter import ttk
 from setup_tournament import SetupTournament
 from resultEntry import ResultEntry
 from Database import Database
-
+from match_schedule import MatchSchedulePage
 
 class Dashboard:
     def __init__(self,root):
@@ -33,7 +33,9 @@ class Dashboard:
         def open_setup_tournament():
             new_window = tk.Toplevel(root)  # Create a new top-level window
             SetupTournament(new_window, db)  # Pass the new window and database instance to SetupTournament
-
+        def open_match_schedule():
+            new_window = tk.Toplevel(root)
+            MatchSchedulePage(new_window, db)
         # Function to open the Results Entry page in a new window
         def open_results_entry():
             new_window = tk.Toplevel(root)  # Create a new top-level window
@@ -73,7 +75,7 @@ class Dashboard:
         # Buttons on the homepage
         button_texts = [
             ("Create Tournament", 0, "black", open_setup_tournament),
-            ("Match Schedule", 1, "black", None),
+            ("Match Schedule", 1, "black", open_match_schedule),
             ("Results Entry", 2, "black", open_results_entry),
             ("Leaderboard", 3, "black", None),
             ("Reports", 4, "black", None),
