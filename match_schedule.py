@@ -104,15 +104,15 @@ class MatchSchedulePage:
         # Display the schedule
         schedule_window = tk.Toplevel(self.root, bg='#A6AEBF')
         schedule_window.title("Match Schedule")
-        schedule_window.geometry("500x500")
+        schedule_window.geometry("600x600")
 
         schedule_label = tk.Label(
             schedule_window, text="Generated Match Schedule", font=("Helvetica", 20, "bold"), bg="#A6AEBF"
         )
         schedule_label.pack(pady=10)
 
-        custom_font = ("TimesNewRoman", 16)
-        schedule_listbox = tk.Listbox(schedule_window, font=custom_font,bg="#C5D3E8", width=70, height=30)
+        custom_font = ("TimesNewRoman", 14)
+        schedule_listbox = tk.Listbox(schedule_window, font=custom_font,bg="#C5D3E8", width=70, height=20)
         schedule_listbox.pack(pady=10)
 
         for match in schedule:
@@ -120,7 +120,7 @@ class MatchSchedulePage:
 
         # Save Schedule Option (if desired)
         save_button = tk.Button(
-            schedule_window, text="Save Schedule", bg="#000B58", fg="white", command=lambda: self.save_schedule(schedule)
+            schedule_window, text="Save Schedule",font=custom_font, bg="#000B58", fg="white", command=lambda: self.save_schedule(schedule)
         )
         save_button.pack(pady=10)
 
@@ -139,5 +139,4 @@ class MatchSchedulePage:
         tk.messagebox.showinfo("Success", "Match schedule saved successfully!")
 
 
-# Example Usage
 
