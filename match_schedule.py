@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from Database import Database
 import sqlite3
 
 
@@ -134,11 +135,4 @@ class MatchSchedulePage:
 
 
 # Example Usage
-if __name__ == "__main__":
 
-
-    root = tk.Tk()
-    MatchSchedulePage(root, db)
-    root.mainloop()
-
-    db.close()

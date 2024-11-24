@@ -2,8 +2,9 @@ import tkinter as tk
 from tkinter import ttk
 from setup_tournament import SetupTournament
 from resultEntry import ResultEntry
-from Database import Database
 from match_schedule import MatchSchedulePage
+from Database import Database
+
 
 class Dashboard:
     def __init__(self,root):
