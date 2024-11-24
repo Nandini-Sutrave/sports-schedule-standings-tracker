@@ -19,13 +19,29 @@ class ResultEntry:
         bg_label.place(relwidth=1, relheight=1)
 
         # Title
-        title = tk.Label(results_frame, text="Results Entry", font=("Arial", 18, "bold"), bg="white", fg="black")
+        title = tk.Label(results_frame, text="Results Entry", font=("Arial", 18, "bold"), bg="#D4EBF8", fg="black")
         title.pack(pady=10)
 
         # Tournament selection
-        tk.Label(results_frame, text="Select Tournament:", font=("Arial", 14), bg="white").pack(pady=5)
+        tk.Label(results_frame, text="Select Tournament:", font=("Arial", 14), bg="#FEF9D9").pack(pady=5)
         self.tournament_dropdown = ttk.Combobox(results_frame, font=("Arial", 14), state="readonly")
         self.tournament_dropdown.pack(pady=5)
+
+        style = ttk.Style()
+        style.theme_use("default")  # Ensure compatibility with the default theme
+
+        # Customize the Treeview background
+        style.configure("Treeview",
+                        background="lightblue",  # Background color of rows
+                        foreground="black",  # Text color
+                        rowheight=25,  # Row height
+                        fieldbackground="lightblue")  # Background color of the entire treeview
+
+        # Customize the header background
+        style.configure("Treeview.Heading",
+                        background="black",
+                        foreground="white",
+                        font=("Arial", 12, "bold"))
 
         self.matches_tree = ttk.Treeview(results_frame, columns=("Match ID", "Team 1", "Team 2"),
                                          show="headings", height=10)
@@ -35,24 +51,24 @@ class ResultEntry:
         self.matches_tree.pack(fill="both", expand=True, padx=20, pady=20)
 
         # Match ID Dropdown
-        tk.Label(results_frame, text="Select Match ID:", font=("Arial", 14), bg="white").pack(pady=5)
+        tk.Label(results_frame, text="Select Match ID:", font=("Arial", 14), bg="#FEF9D9").pack(pady=5)
         self.match_id_dropdown = ttk.Combobox(results_frame, font=("Arial", 14), state="readonly")
         self.match_id_dropdown.pack(pady=5)
 
         # Winner Dropdown
-        tk.Label(results_frame, text="Select Winner:", font=("Arial", 14), bg="white").pack(pady=5)
+        tk.Label(results_frame, text="Select Winner:", font=("Arial", 14), bg="#FEF9D9").pack(pady=5)
         self.winner_dropdown = ttk.Combobox(results_frame, font=("Arial", 14), state="readonly")
         self.winner_dropdown.pack(pady=5)
 
         # Manual Entry Section
-        entry_frame = tk.Frame(results_frame, bg="white")
+        entry_frame = tk.Frame(results_frame, bg="#FEF9D9")
         entry_frame.pack(pady=20)
 
-        tk.Label(entry_frame, text="Team 1 Score:", font=("Arial", 14), bg="white").grid(row=0, column=0, padx=10, pady=5)
+        tk.Label(entry_frame, text="Team 1 Score:", font=("Arial", 14), bg="#FEF9D9").grid(row=0, column=0, padx=10, pady=5)
         self.team1_score_entry = tk.Entry(entry_frame, font=("Arial", 14))
         self.team1_score_entry.grid(row=0, column=1, padx=10, pady=5)
 
-        tk.Label(entry_frame, text="Team 2 Score:", font=("Arial", 14), bg="white").grid(row=1, column=0, padx=10, pady=5)
+        tk.Label(entry_frame, text="Team 2 Score:", font=("Arial", 14), bg="#FEF9D9").grid(row=1, column=0, padx=10, pady=5)
         self.team2_score_entry = tk.Entry(entry_frame, font=("Arial", 14))
         self.team2_score_entry.grid(row=1, column=1, padx=10, pady=5)
 

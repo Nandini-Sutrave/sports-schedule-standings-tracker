@@ -38,30 +38,19 @@ class Database:
                     FOREIGN KEY (tournament_id) REFERENCES tournaments(id)
                 )
             ''')
-        self.cursor.execute('''
-                CREATE TABLE IF NOT EXISTS standings_cricket (
-                    team_id INTEGER PRIMARY KEY,
-                    tournament_id INTEGER,
+        self.cursor.execute("""
+                CREATE TABLE IF NOT EXISTS Standings (
+                    standing_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    tournament_id INTEGER NOT NULL,
+                    team_name TEXT NOT NULL,
                     wins INTEGER DEFAULT 0,
                     losses INTEGER DEFAULT 0,
-                    net_run_rate REAL DEFAULT 0,
-                    points INTEGER DEFAULT 0,
-                    FOREIGN KEY (team_id) REFERENCES teams(id),
-                    FOREIGN KEY (tournament_id) REFERENCES tournaments(id)
-                )
-            ''')
-        self.cursor.execute('''
-                CREATE TABLE IF NOT EXISTS standings_football (
-                    team_id INTEGER PRIMARY KEY,
-                    tournament_id INTEGER,
-                    wins INTEGER DEFAULT 0,
-                    losses INTEGER DEFAULT 0,
+                    net_run_rate REAL DEFAULT 0.0,
                     goal_difference INTEGER DEFAULT 0,
                     points INTEGER DEFAULT 0,
-                    FOREIGN KEY (team_id) REFERENCES teams(id),
-                    FOREIGN KEY (tournament_id) REFERENCES tournaments(id)
-                )
-            ''')
+                    FOREIGN KEY (tournament_id) REFERENCES Tournaments(tournament_id)
+                )""")
+
         self.conn.commit()
 
         self.cursor.execute("PRAGMA table_info(match_result);")
@@ -102,19 +91,19 @@ class Database:
 
     def get_standings(self, tournament_id, sport):
         if sport == "Cricket":
-            query = '''
-                SELECT tournament_id, name, wins, losses, net_run_rate, points
-                FROM standings_cricket AS st
-                JOIN teams AS tm ON team_id = id
-                WHERE tournament_id = ?
-            '''
+            query = """
+            SELECT Standings.tournament_id, Standings.team_name, Standings.wins, 
+                   Standings.losses, Standings.net_run_rate, Standings.points
+            FROM Standings
+            WHERE Standings.tournament_id = ?
+            """
         elif sport == "Football":
-            query = '''
-                SELECT tournament_id, name, wins, losses, goal_difference, points
-                FROM standings_football AS st
-                JOIN teams AS tm ON team_id = id
-                WHERE tournament_id = ?
-            '''
+            query = """
+            SELECT Standings.tournament_id, Standings.team_name, Standings.wins, 
+                   Standings.losses, Standings.goal_difference, Standings.points
+            FROM Standings
+            WHERE Standings.tournament_id = ?
+            """
         self.cursor.execute(query, (tournament_id,))
         return self.cursor.fetchall()
 
@@ -139,47 +128,72 @@ class Database:
         self.cursor.execute("SELECT sport FROM tournaments WHERE id=?", (tournament_id,))
         sport = self.cursor.fetchone()[0]
 
+
+
+
+
         if sport == "Cricket":
-            self.update_cricket_standings(tournament_id, team1, team2, score1, score2, winner)
+            self.insert_cricket_standings(tournament_id, team1, team2, score1, score2, winner)
         elif sport == "Football":
             self.update_football_standings(tournament_id, team1, team2, score1, score2, winner)
 
-    def update_cricket_standings(self, tournament_id, team1, team2, score1, score2, winner):
-        """Update cricket standings based on match results."""
+    def insert_cricket_standings(self, tournament_id, team1, team2, score1, score2, winner):
+        """Insert cricket standings based on match results."""
+
         # Calculate net run rates
         total_runs = score1 + score2
         nrr_team1 = score1 / total_runs if total_runs > 0 else 0
         nrr_team2 = score2 / total_runs if total_runs > 0 else 0
 
-        # Update standings for Team 1
-        self.cursor.execute("""
-            UPDATE standings_cricket
-            SET net_run_rate = net_run_rate + ?,
-                wins = wins + CASE WHEN ? = ? THEN 1 ELSE 0 END,
-                losses = losses + CASE WHEN ? != ? THEN 1 ELSE 0 END,
-                points = points + CASE WHEN ? = ? THEN 2 ELSE 0 END
-            WHERE tournament_id = ? AND team_id = (SELECT id FROM teams WHERE name = ?)
-        """, (nrr_team1, team1, winner, team1, winner, team1, winner, tournament_id, team1))
+        # Initialize points, wins, and losses
+        points_team1 = 0
+        points_team2 = 0
+        wins_team1 = 0
+        wins_team2 = 0
+        losses_team1 = 0
+        losses_team2 = 0
 
-        # Update standings for Team 2
-        self.cursor.execute("""
-            UPDATE standings_cricket
-            SET net_run_rate = net_run_rate + ?,
-                wins = wins + CASE WHEN ? = ? THEN 1 ELSE 0 END,
-                losses = losses + CASE WHEN ? != ? THEN 1 ELSE 0 END,
-                points = points + CASE WHEN ? = ? THEN 2 ELSE 0 END
-            WHERE tournament_id = ? AND team_id = (SELECT id FROM teams WHERE name = ?)
-        """, (nrr_team2, team2, winner, team2, winner, team2, winner, tournament_id, team2))
+        # Determine the winner and update the points, wins, and losses accordingly
+        if winner == team1:
+            wins_team1 = 1
+            losses_team2 = 1
+            points_team1 = 2
+            points_team2 = 0
+        elif winner == team2:
+            wins_team2 = 1
+            losses_team1 = 1
+            points_team1 = 0
+            points_team2 = 2
+        elif winner == "Tie":
+            # In case of a tie, both teams get 1 point each
+            points_team1 = 1
+            points_team2 = 1
+            wins_team1 = 0
+            wins_team2 = 0
+            losses_team1 = 0
+            losses_team2 = 0
 
-        # Handle the case for a tie (no winner)
-        if winner == "Tie":
-            self.cursor.execute("""
-                UPDATE standings_cricket
-                SET points = points + 1
-                WHERE tournament_id = ? AND team_id IN (
-                    SELECT id FROM teams WHERE name IN (?, ?)
-                )
-            """, (tournament_id, team1, team2))
+        # Insert standings for Team 1
+        self.cursor.execute("""
+            INSERT INTO standings (tournament_id, team_id, net_run_rate, wins, losses, points)
+            VALUES (?, 
+                    (SELECT id FROM teams WHERE name = ?), 
+                    ?, 
+                    ?, 
+                    ?, 
+                    ?)
+        """, (tournament_id, team1, nrr_team1, wins_team1, losses_team1, points_team1))
+
+        # Insert standings for Team 2
+        self.cursor.execute("""
+            INSERT INTO standings (tournament_id, team_id, net_run_rate, wins, losses, points)
+            VALUES (?, 
+                    (SELECT id FROM teams WHERE name = ?), 
+                    ?, 
+                    ?, 
+                    ?, 
+                    ?)
+        """, (tournament_id, team2, nrr_team2, wins_team2, losses_team2, points_team2))
 
         self.conn.commit()
 
@@ -190,7 +204,7 @@ class Database:
 
         # Update standings for Team 1
         self.cursor.execute("""
-            UPDATE standings_football
+            UPDATE standings
             SET goal_difference = goal_difference + ?,
                 wins = wins + CASE WHEN ? = ? THEN 1 ELSE 0 END,
                 losses = losses + CASE WHEN ? != ? THEN 1 ELSE 0 END,
@@ -200,7 +214,7 @@ class Database:
 
         # Update standings for Team 2
         self.cursor.execute("""
-            UPDATE standings_football
+            UPDATE standings
             SET goal_difference = goal_difference + ?,
                 wins = wins + CASE WHEN ? = ? THEN 1 ELSE 0 END,
                 losses = losses + CASE WHEN ? != ? THEN 1 ELSE 0 END,
@@ -211,7 +225,7 @@ class Database:
         # Handle the case for a tie (both teams get 1 point each)
         if winner == "Tie":
             self.cursor.execute("""
-                UPDATE standings_football
+                UPDATE standings
                 SET points = points + 1
                 WHERE tournament_id = ? AND team_id IN (
                     SELECT id FROM teams WHERE name IN (?, ?)

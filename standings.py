@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 
 class Standings:
     def __init__(self, master, db):
@@ -25,35 +25,55 @@ class Standings:
         self.tree.pack(fill="both", expand=True, pady=10)
 
     def populate_tournaments(self):
-        tournaments = self.db.get_tournaments()
-        self.tournaments = {f"{t[1]} ({t[2]})": t for t in tournaments}  # Map display text to data
-        self.tournament_dropdown["values"] = list(self.tournaments.keys())
+        try:
+            tournaments = self.db.get_tournaments()
+            if tournaments:
+                self.tournaments = {f"{t[1]} ({t[2]})": t for t in tournaments}  # Map display text to data
+                self.tournament_dropdown["values"] = list(self.tournaments.keys())
+            else:
+                messagebox.showinfo("Info", "No tournaments found in the database.")
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to fetch tournaments: {str(e)}")
 
     def display_standings(self):
         selected_tournament = self.tournament_dropdown.get()
         if not selected_tournament:
+            messagebox.showwarning("Warning", "Please select a tournament.")
             return
 
         tournament_id, _, sport = self.tournaments[selected_tournament]
 
-        # Fetch standings based on the sport
-        standings = self.db.get_standings(tournament_id, sport)
+        try:
+            # Fetch standings based on the sport
+            standings = self.db.get_standings(tournament_id, sport)
 
-        # Update Treeview columns dynamically
-        self.update_tree_columns(sport)
-        for row in self.tree.get_children():
-            self.tree.delete(row)
-        for data in standings:
-            self.tree.insert("", "end", values=data)
+            # Update Treeview columns dynamically
+            self.update_tree_columns(sport)
+            for row in self.tree.get_children():
+                self.tree.delete(row)
+
+            if standings:
+                for data in standings:
+                    self.tree.insert("", "end", values=data)
+            else:
+                self.tree.insert("", "end", values=("No data available",) * len(self.tree["columns"]))
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to display standings: {str(e)}")
 
     def update_tree_columns(self, sport):
-        self.tree.delete(*self.tree.get_children())  # Clear existing rows
+        # Define sport-specific columns
         if sport == "Cricket":
             columns = ("Tournament ID", "Team Name", "Wins", "Losses", "Net Run Rate", "Points")
         elif sport == "Football":
             columns = ("Tournament ID", "Team Name", "Wins", "Losses", "Goal Difference", "Points")
+        else:
+            columns = ("Tournament ID", "Team Name", "Wins", "Losses", "Points")  # Default case
 
+        # Clear existing columns and rows
+        self.tree.delete(*self.tree.get_children())
         self.tree["columns"] = columns
+
+        # Update column headings
         for col in columns:
             self.tree.heading(col, text=col)
-            self.tree.column(col, width=100, anchor="center")
+            self.tree.column(col, width=120, anchor="center")
