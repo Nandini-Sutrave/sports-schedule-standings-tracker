@@ -11,21 +11,24 @@ class MatchSchedulePage:
 
     def create_page(self):
         # Frame for Match Schedule Page
-        self.frame = tk.Frame(self.root, bg="white")
+        self.frame = tk.Frame(self.root)
         self.frame.pack(fill="both", expand=True)
+        self.bg_image = tk.PhotoImage(file='match.png')  # Save as an attribute of the instance
+        bg_label = tk.Label(self.frame, image=self.bg_image)
+        bg_label.place(relwidth=1, relheight=1)
 
         # Title
         title = tk.Label(
             self.frame,
             text="Match Schedule",
             font=("TimesNewRoman", 20, "bold"),
-            bg="sky blue",
+            bg="#D4EBF8",
             fg="black"
         )
         title.pack(pady=20)
 
         # Dropdown for Tournaments
-        tournament_label = tk.Label(self.frame, text="Select Tournament:", font=("Helvetica", 14), bg="white")
+        tournament_label = tk.Label(self.frame, text="Select Tournament:", font=("Helvetica", 14), bg="#D4EBF8")
         tournament_label.pack(pady=5)
 
         self.tournament_combo = ttk.Combobox(self.frame, state="readonly", width=50)
@@ -36,23 +39,24 @@ class MatchSchedulePage:
         load_teams_button = tk.Button(
             self.frame,
             text="Load Teams",
-            font=("Helvetica", 12),
-            bg="blue",
+            font=("Helvetica", 16),
+            bg="black",
             fg="white",
             command=self.load_teams
         )
         load_teams_button.pack(pady=10)
 
+        custom_font = ("TimesNewRoman", 16)
         # Teams Listbox
-        self.teams_listbox = tk.Listbox(self.frame, width=60, height=10)
+        self.teams_listbox = tk.Listbox(self.frame, font=custom_font,bg='#C5D3E8', width=60, height=10)
         self.teams_listbox.pack(pady=10)
 
         # Button to Generate Match Schedule
         generate_schedule_button = tk.Button(
             self.frame,
             text="Generate Match Schedule",
-            font=("Helvetica", 12),
-            bg="green",
+            font=("Helvetica", 16),
+            bg="black",
             fg="white",
             command=self.generate_match_schedule
         )
@@ -97,16 +101,17 @@ class MatchSchedulePage:
                 schedule.append((teams[i], teams[j]))
 
         # Display the schedule
-        schedule_window = tk.Toplevel(self.root)
+        schedule_window = tk.Toplevel(self.root, bg='#A6AEBF')
         schedule_window.title("Match Schedule")
         schedule_window.geometry("500x500")
 
         schedule_label = tk.Label(
-            schedule_window, text="Generated Match Schedule", font=("Helvetica", 16, "bold")
+            schedule_window, text="Generated Match Schedule", font=("Helvetica", 20, "bold"), bg="#A6AEBF"
         )
         schedule_label.pack(pady=10)
 
-        schedule_listbox = tk.Listbox(schedule_window, width=50, height=20)
+        custom_font = ("TimesNewRoman", 16)
+        schedule_listbox = tk.Listbox(schedule_window, font=custom_font,bg="#C5D3E8", width=70, height=30)
         schedule_listbox.pack(pady=10)
 
         for match in schedule:
@@ -114,7 +119,7 @@ class MatchSchedulePage:
 
         # Save Schedule Option (if desired)
         save_button = tk.Button(
-            schedule_window, text="Save Schedule", bg="green", fg="white", command=lambda: self.save_schedule(schedule)
+            schedule_window, text="Save Schedule", bg="#000B58", fg="white", command=lambda: self.save_schedule(schedule)
         )
         save_button.pack(pady=10)
 

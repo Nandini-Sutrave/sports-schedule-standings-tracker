@@ -8,19 +8,28 @@ class SetupTournament:
         self.master = master
         self.db = db
         self.master.title("Setup Tournament")
-        self.master.geometry("750x800")
+        self.master.geometry("550x500")
 
-        header = tk.Label(self.master, text="Choose Sport", font=("Arial", 20))
+        # Main frame
+        self.tournament_frame = tk.Frame(self.master)
+        self.tournament_frame.pack(fill="both", expand=True)
+
+        # Set the background image
+        self.bg_image = tk.PhotoImage(file='match.png')  # Save as an attribute to prevent garbage collection
+        bg_label = tk.Label(self.tournament_frame, image=self.bg_image)
+        bg_label.place(relwidth=1, relheight=1)  # Fill the entire frame
+
+        header = tk.Label(self.tournament_frame, text="Choose Sport", font=("Arial", 20))
         header.pack(pady=20)
 
         cricket_button = tk.Button(
-            self.master, text="Cricket", width=20, bg="lightgreen", font=("Arial", 14),
+            self.tournament_frame, text="Cricket", width=20, bg="black",fg="white", font=("Arial", 14),
             command=lambda: self.open_tournament_page("Cricket")
         )
         cricket_button.pack(pady=10)
 
         football_button = tk.Button(
-            self.master, text="Football", width=20, bg="lightblue", font=("Arial", 14),
+            self.tournament_frame, text="Football", width=20, bg="black",fg="white", font=("Arial", 14),
             command=lambda: self.open_tournament_page("Football")
         )
         football_button.pack(pady=10)
