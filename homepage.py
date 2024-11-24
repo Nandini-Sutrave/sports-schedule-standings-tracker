@@ -3,6 +3,7 @@ from tkinter import ttk
 from setup_tournament import SetupTournament
 from resultEntry import ResultEntry
 from match_schedule import MatchSchedulePage
+from standings import Standings
 from Database import Database
 
 
@@ -41,6 +42,9 @@ class Dashboard:
         def open_results_entry():
             new_window = tk.Toplevel(root)  # Create a new top-level window
             ResultEntry(new_window, db)  # Pass the new window and database instance to ResultEntry
+        def open_standings():
+            new_window = tk.Toplevel(root)
+            Standings(new_window, db)
 
         # Create the homepage
         homepage = tk.Frame(root)
@@ -78,7 +82,7 @@ class Dashboard:
             ("Create Tournament", 0, "black", open_setup_tournament),
             ("Match Schedule", 1, "black", open_match_schedule),
             ("Results Entry", 2, "black", open_results_entry),
-            ("Leaderboard", 3, "black", None),
+            ("Leaderboard", 3, "black", open_standings),
             ("Reports", 4, "black", None),
         ]
 
