@@ -37,6 +37,6 @@ class SetupTournament:
     def open_tournament_page(self, sport):
         new_window = tk.Toplevel(self.master)
         Tournament(new_window, self.db, sport)
-        #self.master.destroy()
+
 
 

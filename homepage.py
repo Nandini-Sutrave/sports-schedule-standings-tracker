@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter import ttk
 from setup_tournament import SetupTournament
 from resultEntry import ResultEntry
 from match_schedule import MatchSchedulePage
@@ -12,36 +11,21 @@ class Dashboard:
         root.title("Sports Schedule & Standings Tracker")
         root.geometry("850x700")
 
-        # Create a Notebook widget
-        #notebook = ttk.Notebook(root)
-
         db = Database()
-
-        # Tabs for the application
-        #tab1 = tk.Frame(notebook, bg="white")
-        #tab2 = tk.Frame(notebook, bg="white")
-        #tab3 = tk.Frame(notebook, bg="white")
-        #tab4 = tk.Frame(notebook, bg="white")
-        #tab5 = tk.Frame(notebook, bg="white")
-
-        #notebook.add(tab1, text="Tournament Setup")
-        #notebook.add(tab2, text="Match Schedule")
-        #notebook.add(tab3, text="Results Entry")
-        #notebook.add(tab4, text="Leaderboard")
-        #notebook.add(tab5, text="Reports")
-
-        #notebook.pack(fill="both", expand=True)
 
         def open_setup_tournament():
             new_window = tk.Toplevel(root)  # Create a new top-level window
             SetupTournament(new_window, db)  # Pass the new window and database instance to SetupTournament
+
         def open_match_schedule():
             new_window = tk.Toplevel(root)
             MatchSchedulePage(new_window, db)
+
         # Function to open the Results Entry page in a new window
         def open_results_entry():
             new_window = tk.Toplevel(root)  # Create a new top-level window
             ResultEntry(new_window, db)  # Pass the new window and database instance to ResultEntry
+
         def open_standings():
             new_window = tk.Toplevel(root)
             Standings(new_window, db)
@@ -82,11 +66,10 @@ class Dashboard:
             ("Create Tournament", 0, "black", open_setup_tournament),
             ("Match Schedule", 1, "black", open_match_schedule),
             ("Results Entry", 2, "black", open_results_entry),
-            ("Leaderboard", 3, "black", open_standings),
-            ("Reports", 4, "black", None),
+            ("Leaderboard", 3, "black", open_standings)
         ]
 
-        for text, index, color,function in button_texts:
+        for text, index, color, function in button_texts:
             tk.Button(
                 homepage,
                 text=text,
