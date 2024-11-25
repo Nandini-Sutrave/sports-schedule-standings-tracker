@@ -120,16 +120,14 @@ class Database:
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """, (tournament_id, team1, team2, match_id, score1, score2, winner))
         self.conn.commit()
-
+        print(tournament_id, team1, team2, match_id, score1, score2, winner)
         # Update standings based on the sport
-        self.cursor.execute("SELECT tournament_id, team1, team2 FROM match_result WHERE id=?", (match_id,))
+        self.cursor.execute("SELECT tournament_id, team1, team2 FROM matches WHERE id=?", (match_id,))
         tournament_id, team1, team2 = self.cursor.fetchone()
+
 
         self.cursor.execute("SELECT sport FROM tournaments WHERE id=?", (tournament_id,))
         sport = self.cursor.fetchone()[0]
-
-
-
 
 
         if sport == "Cricket":
@@ -175,7 +173,7 @@ class Database:
 
         # Insert standings for Team 1
         self.cursor.execute("""
-            INSERT INTO standings (tournament_id, team_id, net_run_rate, wins, losses, points)
+            INSERT INTO standings (tournament_id, team_name, net_run_rate, wins, losses, points)
             VALUES (?, 
                     (SELECT id FROM teams WHERE name = ?), 
                     ?, 
@@ -186,7 +184,7 @@ class Database:
 
         # Insert standings for Team 2
         self.cursor.execute("""
-            INSERT INTO standings (tournament_id, team_id, net_run_rate, wins, losses, points)
+            INSERT INTO standings (tournament_id, team_name, net_run_rate, wins, losses, points)
             VALUES (?, 
                     (SELECT id FROM teams WHERE name = ?), 
                     ?, 

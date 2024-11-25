@@ -13,24 +13,24 @@ class Dashboard:
         root.geometry("850x700")
 
         # Create a Notebook widget
-        notebook = ttk.Notebook(root)
+        #notebook = ttk.Notebook(root)
 
         db = Database()
 
         # Tabs for the application
-        tab1 = tk.Frame(notebook, bg="white")
-        tab2 = tk.Frame(notebook, bg="white")
-        tab3 = tk.Frame(notebook, bg="white")
-        tab4 = tk.Frame(notebook, bg="white")
-        tab5 = tk.Frame(notebook, bg="white")
+        #tab1 = tk.Frame(notebook, bg="white")
+        #tab2 = tk.Frame(notebook, bg="white")
+        #tab3 = tk.Frame(notebook, bg="white")
+        #tab4 = tk.Frame(notebook, bg="white")
+        #tab5 = tk.Frame(notebook, bg="white")
 
-        notebook.add(tab1, text="Tournament Setup")
-        notebook.add(tab2, text="Match Schedule")
-        notebook.add(tab3, text="Results Entry")
-        notebook.add(tab4, text="Leaderboard")
-        notebook.add(tab5, text="Reports")
+        #notebook.add(tab1, text="Tournament Setup")
+        #notebook.add(tab2, text="Match Schedule")
+        #notebook.add(tab3, text="Results Entry")
+        #notebook.add(tab4, text="Leaderboard")
+        #notebook.add(tab5, text="Reports")
 
-        notebook.pack(fill="both", expand=True)
+        #notebook.pack(fill="both", expand=True)
 
         def open_setup_tournament():
             new_window = tk.Toplevel(root)  # Create a new top-level window
